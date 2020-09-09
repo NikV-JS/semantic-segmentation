@@ -8,6 +8,7 @@ import cv2
 from os.path import join, exists, isfile, realpath, dirname
 from os import makedirs, remove, chdir, environ
 from collections import namedtuple
+from scipy.io import loadmat
 
 import torch
 from torch.backends import cudnn
@@ -82,31 +83,31 @@ if args.subset == 'pitts30k_test':
     structFile = join(struct_dir, 'pitts30k_test.mat')
     dbStruct = parse_dbStruct(structFile)
     image_dict = [join(root_dir, dbIm) for dbIm in dbStruct.dbImage]
-    image_dict += [join(queries_dir, qIm) for qIm in self.dbStruct.qImage]
+    image_dict += [join(queries_dir, qIm) for qIm in dbStruct.qImage]
     
 if args.subset == 'pitts30k_val':
     structFile = join(struct_dir, 'pitts30k_val.mat')
     dbStruct = parse_dbStruct(structFile)
     image_dict = [join(root_dir, dbIm) for dbIm in dbStruct.dbImage]
-    image_dict += [join(queries_dir, qIm) for qIm in self.dbStruct.qImage]
+    image_dict += [join(queries_dir, qIm) for qIm in dbStruct.qImage]
  
 if args.subset == 'pitts30k_train':
     structFile = join(struct_dir, 'pitts30k_train.mat')
     dbStruct = parse_dbStruct(structFile)
     image_dict = [join(root_dir, dbIm) for dbIm in dbStruct.dbImage]
-    image_dict += [join(queries_dir, qIm) for qIm in self.dbStruct.qImage]
+    image_dict += [join(queries_dir, qIm) for qIm in dbStruct.qImage]
     
 if args.subset == 'pitts250k_val':
     structFile = join(struct_dir, 'pitts250k_val.mat')
     dbStruct = parse_dbStruct(structFile)
     image_dict = [join(root_dir, dbIm) for dbIm in dbStruct.dbImage]
-    image_dict += [join(queries_dir, qIm) for qIm in self.dbStruct.qImage]
+    image_dict += [join(queries_dir, qIm) for qIm in dbStruct.qImage]
     
 if args.subset == 'pitts250k_test':
     structFile = join(struct_dir, 'pitts250k_test.mat')
     dbStruct = parse_dbStruct(structFile)
     image_dict = [join(root_dir, dbIm) for dbIm in dbStruct.dbImage]
-    image_dict += [join(queries_dir, qIm) for qIm in self.dbStruct.qImage]
+    image_dict += [join(queries_dir, qIm) for qIm in dbStruct.qImage]
 
 images = image_dict
 if len(images) == 0:
