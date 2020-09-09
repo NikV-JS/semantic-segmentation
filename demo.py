@@ -51,6 +51,7 @@ pred = np.argmax(pred, axis=0)
 if not os.path.exists(args.save_dir):
     os.makedirs(args.save_dir)
 
+np.savetxt(os.path.join(args.save_dir,'labels.csv'), pred, delimiter=',')
 colorized = args.dataset_cls.colorize_mask(pred)
 colorized.save(os.path.join(args.save_dir, 'color_mask.png'))
 
