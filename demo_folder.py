@@ -48,8 +48,8 @@ img_transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(
 
 os.makedirs(args.save_dir,exist_ok=True)
 os.makedirs(os.path.join(args.save_dir,'color_mask'),exist_ok=True)
-os.makedirs(os.path.join(args.save_dir,'overlap_images'),exist_ok=True)
-os.makedirs(os.path.join(args.save_dir,'pred_mask'),exist_ok=True)
+#os.makedirs(os.path.join(args.save_dir,'overlap_images'),exist_ok=True)
+#os.makedirs(os.path.join(args.save_dir,'pred_mask'),exist_ok=True)
 os.makedirs(os.path.join(args.save_dir,'semantic_labels'),exist_ok=True)
 
 start_time = time.time()
@@ -67,26 +67,26 @@ for img_id, img_name in enumerate(images):
     pred = np.argmax(pred, axis=0)
 
     color_name = 'color_mask_' + img_name.replace('.jpg','.png')
-    overlap_name = 'overlap_' + img_name.replace('.jpg','.png')
-    pred_name = 'pred_mask_' + img_name.replace('.jpg','.png')
-    label_name = 'label_' + img_name.replace('.jpg','.csv')
+    # overlap_name = 'overlap_' + img_name.replace('.jpg','.png')
+    # pred_name = 'pred_mask_' + img_name.replace('.jpg','.png')
+    label_name = 'label_' + img_name.replace('.jpg','.npy')
 
     # save semantic labels
-    np.savetxt(os.path.join(os.path.join(args.save_dir,'semantic_labels'),label_name), pred, delimiter=',')
+    np.save(os.path.join(os.path.join(args.save_dir,'semantic_labels'),label_name), pred)
 
     # save colorized predictions
     colorized = args.dataset_cls.colorize_mask(pred)
     colorized.save(os.path.join(os.path.join(args.save_dir,'color_mask'), color_name))
 
     # save colorized predictions overlapped on original images
-    overlap = cv2.addWeighted(np.array(img), 0.5, np.array(colorized.convert('RGB')), 0.5, 0)
-    cv2.imwrite(os.path.join(os.path.join(args.save_dir,'overlap_images'), overlap_name), overlap[:, :, ::-1])
+    # overlap = cv2.addWeighted(np.array(img), 0.5, np.array(colorized.convert('RGB')), 0.5, 0)
+    # cv2.imwrite(os.path.join(os.path.join(args.save_dir,'overlap_images'), overlap_name), overlap[:, :, ::-1])
 
     # save label-based predictions, e.g. for submission purpose
-    label_out = np.zeros_like(pred)
-    for label_id, train_id in args.dataset_cls.id_to_trainid.items():
-        label_out[np.where(pred == train_id)] = label_id
-        cv2.imwrite(os.path.join((os.path.join(args.save_dir,'pred_mask')), pred_name), label_out)
+    # label_out = np.zeros_like(pred)
+    # for label_id, train_id in args.dataset_cls.id_to_trainid.items():
+    #     label_out[np.where(pred == train_id)] = label_id
+    #     cv2.imwrite(os.path.join((os.path.join(args.save_dir,'pred_mask')), pred_name), label_out)
 end_time = time.time()
 
 print('Results saved.')
