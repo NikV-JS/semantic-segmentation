@@ -5,7 +5,7 @@ import argparse
 from PIL import Image
 import numpy as np
 import cv2
-from os.path import join, exists, isfile, realpath, dirname
+from os.path import join, exists, isfile, realpath, dirname, basename
 from os import makedirs, remove, chdir, environ
 from collections import namedtuple
 from scipy.io import loadmat
@@ -41,7 +41,7 @@ print('Net restored.')
 
 # get data
 root_dir = args.inference_folder
-if not exists(root_dir):
+if not os.path.exists(root_dir):
     raise FileNotFoundError('root_dir is hardcoded, please adjust to point to Pittsburth dataset')
 
 struct_dir = join(root_dir, 'datasets/')
@@ -124,8 +124,9 @@ os.makedirs(os.path.join(args.save_dir,'color_mask'),exist_ok=True)
 os.makedirs(os.path.join(args.save_dir,'semantic_labels'),exist_ok=True)
 
 start_time = time.time()
-for img_id, img_name in enumerate(images):
-    img_dir = os.path.join(data_dir, img_name)
+for img_id, img_dir in enumerate(images):
+    #img_dir = os.path.join(data_dir, img_name)
+    img_name = basename(img_dir)
     img = Image.open(img_dir).convert('RGB')
     img_tensor = img_transform(img)
 
