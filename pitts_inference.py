@@ -5,6 +5,10 @@ import argparse
 from PIL import Image
 import numpy as np
 import cv2
+from os.path import join, exists, isfile, realpath, dirname, basename
+from os import makedirs, remove, chdir, environ
+from collections import namedtuple
+from scipy.io import loadmat
 
 import torch
 from torch.backends import cudnn
@@ -37,7 +41,7 @@ print('Net restored.')
 
 # get data
 root_dir = args.inference_folder
-if not exists(root_dir):
+if not os.path.exists(root_dir):
     raise FileNotFoundError('root_dir is hardcoded, please adjust to point to Pittsburth dataset')
 
 struct_dir = join(root_dir, 'datasets/')
@@ -79,31 +83,31 @@ if args.subset == 'pitts30k_test':
     structFile = join(struct_dir, 'pitts30k_test.mat')
     dbStruct = parse_dbStruct(structFile)
     image_dict = [join(root_dir, dbIm) for dbIm in dbStruct.dbImage]
-    image_dict += [join(queries_dir, qIm) for qIm in self.dbStruct.qImage]
+    image_dict += [join(queries_dir, qIm) for qIm in dbStruct.qImage]
     
 if args.subset == 'pitts30k_val':
     structFile = join(struct_dir, 'pitts30k_val.mat')
     dbStruct = parse_dbStruct(structFile)
     image_dict = [join(root_dir, dbIm) for dbIm in dbStruct.dbImage]
-    image_dict += [join(queries_dir, qIm) for qIm in self.dbStruct.qImage]
+    image_dict += [join(queries_dir, qIm) for qIm in dbStruct.qImage]
  
 if args.subset == 'pitts30k_train':
     structFile = join(struct_dir, 'pitts30k_train.mat')
     dbStruct = parse_dbStruct(structFile)
     image_dict = [join(root_dir, dbIm) for dbIm in dbStruct.dbImage]
-    image_dict += [join(queries_dir, qIm) for qIm in self.dbStruct.qImage]
+    image_dict += [join(queries_dir, qIm) for qIm in dbStruct.qImage]
     
 if args.subset == 'pitts250k_val':
     structFile = join(struct_dir, 'pitts250k_val.mat')
     dbStruct = parse_dbStruct(structFile)
     image_dict = [join(root_dir, dbIm) for dbIm in dbStruct.dbImage]
-    image_dict += [join(queries_dir, qIm) for qIm in self.dbStruct.qImage]
+    image_dict += [join(queries_dir, qIm) for qIm in dbStruct.qImage]
     
 if args.subset == 'pitts250k_test':
     structFile = join(struct_dir, 'pitts250k_test.mat')
     dbStruct = parse_dbStruct(structFile)
     image_dict = [join(root_dir, dbIm) for dbIm in dbStruct.dbImage]
-    image_dict += [join(queries_dir, qIm) for qIm in self.dbStruct.qImage]
+    image_dict += [join(queries_dir, qIm) for qIm in dbStruct.qImage]
 
 images = image_dict
 if len(images) == 0:
@@ -117,13 +121,12 @@ img_transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(
 
 os.makedirs(args.save_dir,exist_ok=True)
 os.makedirs(os.path.join(args.save_dir,'color_mask'),exist_ok=True)
-#os.makedirs(os.path.join(args.save_dir,'overlap_images'),exist_ok=True)
-#os.makedirs(os.path.join(args.save_dir,'pred_mask'),exist_ok=True)
 os.makedirs(os.path.join(args.save_dir,'semantic_labels'),exist_ok=True)
 
 start_time = time.time()
-for img_id, img_name in enumerate(images):
-    img_dir = os.path.join(data_dir, img_name)
+for img_id, img_dir in enumerate(images):
+    #img_dir = os.path.join(data_dir, img_name)
+    img_name = basename(img_dir)
     img = Image.open(img_dir).convert('RGB')
     img_tensor = img_transform(img)
 
