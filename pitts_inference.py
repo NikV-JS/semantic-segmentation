@@ -120,8 +120,9 @@ mean_std = ([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 img_transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize(*mean_std)])
 
 os.makedirs(args.save_dir,exist_ok=True)
-os.makedirs(os.path.join(args.save_dir,'color_mask'),exist_ok=True)
-os.makedirs(os.path.join(args.save_dir,'semantic_labels'),exist_ok=True)
+# os.makedirs(os.path.join(args.save_dir,'color_mask'),exist_ok=True)
+# os.makedirs(os.path.join(args.save_dir,'semantic_labels'),exist_ok=True)
+os.makedirs(os.path.join(args.save_dir,'semantic_prob'),exist_ok=True)
 
 start_time = time.time()
 for img_id, img_dir in enumerate(images):
@@ -136,17 +137,20 @@ for img_id, img_dir in enumerate(images):
         print('%04d/%04d: Inference done.' % (img_id + 1, len(images)))
 
     pred = pred.cpu().numpy().squeeze()
+    prob = pred
     pred = np.argmax(pred, axis=0)
 
     color_name = 'color_mask_' + img_name.replace('.jpg','.png')
     label_name = 'label_' + img_name.replace('.jpg','.npy')
+    prob_name = 'prob_' + img_name.replace('.jpg','.npy')
 
     # save semantic labels
-    np.save(os.path.join(os.path.join(args.save_dir,'semantic_labels'),label_name), pred)
+    #np.save(os.path.join(os.path.join(args.save_dir,'semantic_labels'),label_name), pred)
+    np.save(os.path.join(os.path.join(args.save_dir,'semantic_prob'),prob_name), prob)
 
     # save colorized predictions
-    colorized = args.dataset_cls.colorize_mask(pred)
-    colorized.save(os.path.join(os.path.join(args.save_dir,'color_mask'), color_name))
+    # colorized = args.dataset_cls.colorize_mask(pred)
+    # colorized.save(os.path.join(os.path.join(args.save_dir,'color_mask'), color_name))
 
 end_time = time.time()
 
