@@ -110,7 +110,7 @@ for img_id, img_dir in enumerate(images):
 
     color_name = 'color_mask_' + img_name
     label_name = 'label_' + img_name
-    prob_name = 'prob_' + img_name
+    prob_name = 'prob_' + img_name.replace('.png','.npy')
 
     # save semantic labels
     #np.save(os.path.join(os.path.join(args.save_dir,'semantic_labels'),label_name), pred)
