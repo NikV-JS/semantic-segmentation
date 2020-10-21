@@ -43,7 +43,7 @@ root_dir = args.inference_folder
 if not os.path.exists(root_dir):
     raise FileNotFoundError('root_dir is hardcoded, please adjust to point to Oxford dataset')
 
-dbstruct = namedtuple('Struct', [
+dbStruct = namedtuple('Struct', ['whichSet', 'dataset',
     'dbImage', 'locDb', 'qImage', 'locQ', 'numDb', 'numQ',
     'posDistThr', 'posDistSqThr'])
 
